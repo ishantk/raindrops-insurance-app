@@ -1,0 +1,354 @@
+<form [formGroup]="booking">
+    <ng-container *ngIf="step == 0">
+        <div class="container py-5">
+            <div style="height: 300px;">
+                <h2 class="fw-bolder">Select Plan</h2>
+                <hr>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="step == 1">
+        <div class="container py-5">
+            <h2 class="fw-bolder">Select Plan</h2>
+            <hr>
+            <div class="accordion" id="plans">
+                <div class="accordion-item" *ngFor="let plan of plansList; let i = index;">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            [attr.data-bs-target]="'#plan'+i" aria-expanded="true" aria-controls="collapseOne">
+                            {{ plan.planName }}
+                        </button>
+                    </h2>
+                    <div [id]="'plan'+i" class="accordion-collapse collapse " aria-labelledby="headingOne"
+                        data-bs-parent="#plans">
+                        <div class="accordion-body">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    {{ plan.description }}
+                                </div>
+                                <div class="col-sm-3 text-end">
+                                    <div class="h4 fw-bolder">
+                                        INR. {{ plan.baseAmt * discount }}
+                                    </div>
+                                    <div class="text-muted"><s>INR. {{ plan.baseAmt * 2 }}</s></div>
+                                        <button type="button" (click)="viewPlanDetails(plan.id)"
+                                        class="btn btn-outline-primary">View More</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="step == 2">
+        <div class="container py-5">
+            <h2 class="fw-bolder">Make Payment</h2>
+            <hr>
+            <div class="alert alert-danger" *ngIf="showError">
+                Please fill all the data.
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="name">Name</label>
+                        <input type="text" formControlName="name" class="form-control" required id="name">
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['name'].touched && submittedStep1) && bookingControl['name'].errors">
+                            Enter your Name
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="age">Age</label>
+                        <input type="number" formControlName="age" class="form-control" required max="99"
+                            id="age">
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['age'].touched && submittedStep1) && bookingControl['age'].errors">
+                            Enter your valid Age
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="phone">Phone</label>
+                        <input type="text" formControlName="phone" class="form-control" required id="phone">
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['phone'].touched && submittedStep1) && bookingControl['phone'].errors">
+                            Enter your valid Phone
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="email">Email</label>
+                        <input type="email" formControlName="email" class="form-control" required id="email">
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['email'].touched && submittedStep1) && bookingControl['email'].errors">
+                            Enter your valid Email
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="city">City</label>
+                        <input type="text" formControlName="city" class="form-control" required id="city">
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['city'].touched && submittedStep1) && bookingControl['city'].errors">
+                            Enter your City
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="validity">Validity</label>
+                        <input type="text" formControlName="validity" class="form-control" readonly id="validity">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="paymentMode">Payment Mode</label>
+                        <div class="w-100">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="paymentMode"
+                                    id="paymentMode_1" value="Credit Card">
+                                <label class="form-check-label" for="paymentMode_1">Credit Card</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="paymentMode"
+                                    id="paymentMode_2" value="Debit Card">
+                                <label class="form-check-label" for="paymentMode_2">Debit Card</label>
+                            </div>
+                        </div>
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['paymentMode'].touched && submittedStep3) && bookingControl['paymentMode'].errors">
+                            Select Paymant Mode
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" formControlName="cardNumber" class="form-control" required id="cardNumber">
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['cardNumber'].touched && submittedStep3) && bookingControl['cardNumber'].errors">
+                            Enter your Card Number
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="premiumAmt">Premium Amount (INR)</label>
+                        <input type="text" formControlName="premiumAmt" class="form-control" readonly id="premiumAmt">
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['premiumAmt'].touched && submittedStep3) && bookingControl['premiumAmt'].errors">
+                            Premium Amount
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group mb-3">
+                        <label for="paymentFreq">Payment Frequency</label>
+                        <select formControlName="paymentFreq" class="form-select" readonly id="paymentFreq">
+                            <option value="Quarterly">Quarterly</option>
+                            <option value="Half Yearly">Half Yearly</option>
+                            <option value="Yearly" selected>Yearly</option>
+                        </select>
+                        <span class="text-danger error-text"
+                            *ngIf="(bookingControl['paymentFreq'].touched && submittedStep3) && bookingControl['paymentFreq'].errors">
+                            Enter your Payment Frequency
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" (click)="onSubmitStep2()">Submit</button>
+
+        </div>
+    </ng-container>
+    <ng-container *ngIf="step == 3">
+        <div class="container py-5">
+            <div class="alert alert-success" role="alert" *ngIf="showSuccess">
+                Congratulations! you have bought a new policy. Below are the policy details.
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td width="20%">Policy Name :</td>
+                            <td width="80%">{{ finalData.planName }}</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Validity till:</td>
+                            <td width="80%">{{ finalData.validity }}</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Premium Amount :</td>
+                            <td width="80%">{{ finalData.premiumAmt }}</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Payment Mode :</td>
+                            <td width="80%">{{ finalData.paymentMode }}</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Payment Frequency :</td>
+                            <td width="80%">{{ finalData.paymentFreq }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </ng-container>
+    <!-- Modal -->
+    <div class="modal fade" id="question1" tabindex="-1" aria-labelledby="question1Label" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-3" for="below_30">Are you below 30 years of age?</label>
+                        <div class="w-100">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="below_30" id="below_30_1"
+                                    value="Yes" (click)="changeModal(2)">
+                                <label class="form-check-label" for="below_30_1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="below_30" id="below_30_2"
+                                    value="No" (click)="changeModal(2)">
+                                <label class="form-check-label" for="below_30_2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="question2" tabindex="-1" aria-labelledby="question2Label" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-3" for="diseases">Are you having any existing diseases?</label>
+                        <div class="w-100">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="diseases" id="diseases_1"
+                                    value="Yes" (click)="changeModal(3)">
+                                <label class="form-check-label" for="diseases_1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="diseases" id="diseases_2"
+                                    value="No" (click)="changeModal(3)">
+                                <label class="form-check-label" for="diseases_2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="question3" tabindex="-1" aria-labelledby="question3Label" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-3" for="physical_activity">Are you involved in some physical activity?</label>
+                        <div class="w-100">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="physical_activity"
+                                    id="physical_activity_1" value="Yes" (click)="changeModal(4)">
+                                <label class="form-check-label" for="physical_activity_1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="physical_activity"
+                                    id="physical_activity_2" value="No" (click)="changeModal(4)">
+                                <label class="form-check-label" for="physical_activity_2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="question4" tabindex="-1" aria-labelledby="question4Label" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-3" for="smoke">Do you smoke?</label>
+                        <div class="w-100">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="smoke" id="smoke_1"
+                                    value="Yes" (click)="changeModal(5)">
+                                <label class="form-check-label" for="smoke_1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="smoke" id="smoke_2"
+                                    value="No" (click)="changeModal(5)">
+                                <label class="form-check-label" for="smoke_2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="question5" tabindex="-1" aria-labelledby="question5Label" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-3" for="alcohol">Do you consume alcohol?</label>
+                        <div class="w-100">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="alcohol" id="alcohol_1"
+                                    value="Yes" (click)="showSubmit = true">
+                                <label class="form-check-label" for="alcohol_1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" formControlName="alcohol" id="alcohol_2"
+                                    value="No" (click)="showSubmit = true">
+                                <label class="form-check-label" for="alcohol_2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary w-100" *ngIf="showSubmit" (click)="changeModal(6)">Get
+                        Plans</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Plan Details Modal -->
+    <div class="modal fade" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="planDetailsModalLabel">Plan Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    <h5 class="card-title border-bottom pb-2">{{selectedPlan.planName}}</h5>
+                    <p class="card-text">{{selectedPlan.description}}</p>
+                    <div class="float-end">
+                        <div class="h4 fw-bolder">
+                            INR. {{ selectedPlan.premiumAmt }}
+                        </div>
+                        <div class="text-muted modal-base-amt"><s>INR. {{ selectedPlan.baseAmt * 2 }}</s></div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" (click)="onSubmitStep1(selectedPlan)">Buy Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Plan Details Modal Ends -->
+</form>
