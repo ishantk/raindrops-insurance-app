@@ -4,9 +4,6 @@ pipeline {
     stages {
         stage('Source') {
             steps {
-                // Get  code from a GitHub repository
-                git 'https://github.com/ishantk/raindrops-insurance-app.git'
-
                 // Run npm install
                 sh "nvm use 16.14"
                 sh "npm install"
