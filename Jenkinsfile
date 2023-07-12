@@ -5,7 +5,6 @@ pipeline {
         stage('Source') {
             steps {
                 // Run npm install
-                sh "nvm use 16.14"
                 sh "npm install"
 
                 echo 'Source Stage Finished'
