@@ -2,22 +2,6 @@ pipeline {
     agent any
   
     stages {
-        stage('Source') {
-            steps {
-                // Run npm install
-                sh "npm install"
-
-                echo 'Source Stage Finished'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                // Run ng build command
-                sh "ng build"
-                echo 'Build Stage Finished'
-            }
-        }
 
         stage('Containerize') {
             steps {
